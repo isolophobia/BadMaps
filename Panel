@@ -1,0 +1,58 @@
+import java.awt.Color;
+import java.awt.Graphics;
+
+import javax.swing.JPanel;
+
+public class MapPanel extends JPanel {
+	private MapModel mp;
+
+	public MapPanel(MapModel mp) {
+		this.mp = mp;
+	}
+
+	/**
+	 * 1: 1 2: 2 3: 3 W: 4 M: 5 F: 6 G1: 7 and G2:8 A: 12 Water: 0 Land: 9 Grey
+	 * Highway: 10 Toll Bridge: 11
+	 * 
+	 * @param g
+	 */
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		// 30 pixels for each square 20 x 20
+		int[][] map = mp.getMap();
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[0].length; j++) {
+				if (map[i][j] == 1 || map[i][j] == 2 || map[i][j] == 3) {
+					g.setColor(Color.PINK);
+				} else if (map[i][j] == 9) {
+					g.setColor(Color.GREEN);
+				} else if (map[i][j] == 0) {
+					g.setColor(Color.CYAN);
+				} else if (map[i][j] == 4) {
+					g.setColor(new Color(75, 0, 130));
+				} else if (map[i][j] == 10) {
+					g.setColor(Color.GRAY);
+				} else if (map[i][j] == 19) {
+					g.setColor(Color.LIGHT_GRAY);
+				} else if (map[i][j] == 11) {
+					g.setColor(Color.ORANGE);
+				} else if (map[i][j] == 7 || map[i][j] == 8) {
+					g.setColor(Color.RED);
+				} else if (map[i][j] == 5) {
+					g.setColor(Color.MAGENTA);
+				} else if (map[i][j] == 6) {
+					g.setColor(Color.BLUE);
+				} else if (map[i][j] == 12) {
+					g.setColor(Color.BLACK);
+				} else if (map[i][j] == 99) {
+					g.setColor(Color.YELLOW);
+				}
+				g.fillRect(30 * j, 30 * i, 30, 30);
+				g.setColor(Color.BLACK);
+				g.drawRect(30 * j, 30 * i, 30, 30);
+			}
+		}
+
+	}
+}
