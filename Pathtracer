@@ -1,0 +1,155 @@
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+
+public class ShortestPath {
+
+	// BFS search algorithm
+	public static void bfs(Position startPoint, 
+			                 Position endPoint, 
+			                 int[][] map, 
+			                 boolean avoidTollBridge) {
+		Queue<Position> q = new LinkedList<>();
+		Set<Position> visited = new HashSet<>();
+		q.offer(startPoint);
+		Map<Position, Position> from = new HashMap<>();
+		while (!q.isEmpty()) {
+			Position current = q.poll();
+			if (current.equals(endPoint)) {
+				break;
+			}
+			if (!visited.contains(current)) {
+				visited.add(current);
+				// NORTH
+				if (current.i - 1 >= 0 
+						&& map[current.i - 1][current.j] != 0
+						&& !(avoidTollBridge && map[current.i - 1][current.j] == 11)) {
+					Position child = new Position(current.i - 1, current.j);
+					if (!from.containsKey(child)) {
+						q.offer(child);
+						from.put(child, current);
+					}
+				}
+				// EAST
+				if (current.j + 1 < map[0].length
+				      && map[current.i][current.j + 1] != 0
+					   && !(avoidTollBridge && map[current.i][current.j + 1] == 11)) {
+					Position child = new Position(current.i, current.j + 1);
+					if (!from.containsKey(child)) {
+						q.offer(child);
+						from.put(child, current);
+					}
+				}
+				// SOUTH
+				if (current.i + 1 < map.length
+				      && map[current.i + 1][current.j] != 0
+					   && !(avoidTollBridge && map[current.i + 1][current.j] == 11)) {
+					Position child = new Position(current.i + 1, current.j);
+					if (!from.containsKey(child)) {
+						q.offer(child);
+						from.put(child, current);
+					}
+				}
+				// WEST
+				if (current.j - 1 >= 0 
+						&& map[current.i][current.j - 1] != 0
+					   && !(avoidTollBridge && map[current.i][current.j - 1] == 11)) {
+					Position child = new Position(current.i, current.j - 1);
+					if (!from.containsKey(child)) {
+						q.offer(child);
+						from.put(child, current);
+					}
+				}
+			}
+		}
+
+		Position currentPoint = endPoint;
+		while (!currentPoint.equals(startPoint)) {
+			if (!currentPoint.equals(endPoint)
+			      && !currentPoint.equals(startPoint)) {
+				map[currentPoint.i][currentPoint.j] = 99;
+			}
+			currentPoint = from.get(currentPoint);
+		}
+	}
+
+	public static void aStarSearch(Position startPoint, 
+			                         Position endPoint, 
+			                         int[][] map,
+			                         boolean avoidTollBridge) {
+		PriorityQueue<Position> pq = new PriorityQueue<>();
+		Set<Position> visited = new HashSet<>();
+		pq.offer(startPoint);
+		Map<Position, Position> from = new HashMap<>();
+		while (!pq.isEmpty()) {
+			Position current = pq.poll();
+			if (current.equals(endPoint)) {
+				break;
+			}
+			if (!visited.contains(current)) {
+				visited.add(current);
+				// NORTH
+				if (current.i - 1 >= 0 
+						&& map[current.i - 1][current.j] != 0
+					   && !(avoidTollBridge && map[current.i - 1][current.j] == 11)) {
+					Position child = new Position(current.i - 1, current.j);
+					child.manhattanDistance = manhattanDistance(child, endPoint);
+					if (!from.containsKey(child)) {
+						pq.offer(child);
+						from.put(child, current);
+					}
+				}
+				// EAST
+				if (current.j + 1 < map[0].length
+				      && map[current.i][current.j + 1] != 0
+					   && !(avoidTollBridge && map[current.i][current.j + 1] == 11)) {
+					Position child = new Position(current.i, current.j + 1);
+					child.manhattanDistance = manhattanDistance(child, endPoint);
+					if (!from.containsKey(child)) {
+						pq.offer(child);
+						from.put(child, current);
+					}
+				}
+				// SOUTH
+				if (current.i + 1 < map.length
+				      && map[current.i + 1][current.j] != 0
+					   && !(avoidTollBridge && map[current.i + 1][current.j] == 11)) {
+					Position child = new Position(current.i + 1, current.j);
+					child.manhattanDistance = manhattanDistance(child, endPoint);
+					if (!from.containsKey(child)) {
+						pq.offer(child);
+						from.put(child, current);
+					}
+				}
+				// WEST
+				if (current.j - 1 >= 0 
+						&& map[current.i][current.j - 1] != 0
+					   && !(avoidTollBridge && map[current.i][current.j - 1] == 11)) {
+					Position child = new Position(current.i, current.j - 1);
+					child.manhattanDistance = manhattanDistance(child, endPoint);
+					if (!from.containsKey(child)) {
+						pq.offer(child);
+						from.put(child, current);
+					}
+				}
+			}
+		}
+
+		Position currentPoint = endPoint;
+		while (!currentPoint.equals(startPoint)) {
+			if (!currentPoint.equals(endPoint)
+			      && !currentPoint.equals(startPoint)) {
+				map[currentPoint.i][currentPoint.j] = 99;
+			}
+			currentPoint = from.get(currentPoint);
+		}
+	}
+	
+	private static int manhattanDistance(Position one, Position other) {
+		return Math.abs(one.i - other.i) + Math.abs(one.j - other.j);
+	}
+}
