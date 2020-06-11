@@ -1,0 +1,10 @@
+
+public class ApplicationStarter {
+
+	public static void main(String[] args) {
+		MapModel m = new MapModel();
+		MainView v = new MainView(m);
+		Controller c = new Controller(m, v);
+	}
+
+}
