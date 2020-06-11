@@ -1,0 +1,179 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+
+public class MainView {
+	private static final Color LIGHT_BLUE = new Color(32, 164, 255);
+
+	private MapModel model;
+	private JButton searchButton;
+	private JComboBox<String> startPointOptions;
+	private JComboBox<String> endPointOptions;
+	private MapPanel mapPanel;
+	private JRadioButton bfsAlgorithmOption;
+	private JRadioButton aStartAlgorithmOption;
+	private JCheckBox avoidTollBridgeOption;
+
+	public MainView(MapModel m) {
+		this.model = m;
+		this.searchButton = new JButton();
+		this.startPointOptions = new JComboBox<>();
+		this.endPointOptions = new JComboBox<>();
+		this.bfsAlgorithmOption = new JRadioButton("BFS Search Algorithm", true);
+		this.aStartAlgorithmOption = new JRadioButton("A* Search Algorithm");
+		this.avoidTollBridgeOption = new JCheckBox("Avoid Toll Bridge");
+		this.mapPanel = new MapPanel(this.model);
+		initialize();
+	}
+	
+	public JCheckBox getAvoidTollBridgeOption() {
+		return this.avoidTollBridgeOption;
+	}
+
+	public JRadioButton getBfsAlgorithmOption() {
+		return this.bfsAlgorithmOption;
+	}
+
+	public JRadioButton getAStartAlgorithmOption() {
+		return this.aStartAlgorithmOption;
+	}
+
+	public JButton getSearchButton() {
+		return this.searchButton;
+	}
+
+	public JComboBox<String> getStartPointOptions() {
+		return this.startPointOptions;
+	}
+
+	public JComboBox<String> getEndPointOptions() {
+		return this.endPointOptions;
+	}
+
+	private void initialize() {
+		JFrame frame = new JFrame("Smart Maps");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+
+		FlowLayout seemlessLayout = new FlowLayout(FlowLayout.LEADING, 0, 0);
+
+		final JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(seemlessLayout);
+		mainPanel.setPreferredSize(new Dimension(1150, 600));
+		mainPanel.setVisible(true);
+
+		final JPanel controlPanel = new JPanel();
+		controlPanel.setVisible(true);
+		controlPanel.setPreferredSize(new Dimension(370, 600));
+		controlPanel.setBackground(LIGHT_BLUE);
+		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
+		controlPanel.add(createStartPoint());
+		controlPanel.add(createEndPoint());
+		controlPanel.add(createAdvancedOptions());
+		controlPanel.add(createSearchButton());
+
+		mainPanel.add(controlPanel, BorderLayout.WEST);
+
+		mapPanel.setVisible(true);
+		mapPanel.setPreferredSize(new Dimension(780, 600));
+		mapPanel.setBackground(Color.GREEN);
+		mainPanel.add(mapPanel, BorderLayout.EAST);
+
+		frame.add(mainPanel, BorderLayout.CENTER);
+		frame.setResizable(false);
+		frame.pack();
+		mapPanel.repaint();
+	}
+
+	private Component createSearchButton() {
+		JPanel buttonArea = new JPanel();
+		buttonArea.setVisible(true);
+		buttonArea.setBackground(LIGHT_BLUE);
+		buttonArea.setPreferredSize(new Dimension(200, 250));
+		buttonArea.setLayout(new BoxLayout(buttonArea, 0));
+		searchButton.setVisible(true);
+		searchButton.setText("Search");
+		searchButton.setPreferredSize(new Dimension(100, 60));
+		buttonArea.add(searchButton);
+		return buttonArea;
+	}
+
+	private Component createAdvancedOptions() {
+		JPanel advancedOptions = new JPanel();
+		advancedOptions.setVisible(true);
+		advancedOptions.setBackground(Color.WHITE);
+		advancedOptions.setPreferredSize(new Dimension(200, 250));
+		ButtonGroup btnGroup = new ButtonGroup();
+		btnGroup.add(this.bfsAlgorithmOption);
+		btnGroup.add(this.aStartAlgorithmOption);
+		advancedOptions.add(this.bfsAlgorithmOption);
+		advancedOptions.add(this.aStartAlgorithmOption);
+		advancedOptions.add(this.avoidTollBridgeOption);
+		return advancedOptions;
+	}
+
+	private Component createStartPoint() {
+		final JPanel startPoint = new JPanel();
+		startPoint.setVisible(true);
+		startPoint.setBackground(LIGHT_BLUE);
+
+		JLabel startPointLabel = new JLabel();
+		startPointLabel.setVisible(true);
+
+		ImageIcon startPointIcon = new ImageIcon("img/circle.png");
+		startPointLabel.setIcon(startPointIcon);
+		startPointLabel.setPreferredSize(new Dimension(50, 75));
+		startPointLabel.setMaximumSize(new Dimension(50, 75));
+
+		startPointOptions.setPreferredSize(new Dimension(280, 75));
+		startPointOptions.setVisible(true);
+		for (String location : model.getLocations().keySet()) {
+			startPointOptions.addItem(location);
+		}
+
+		startPoint.add(startPointLabel);
+		startPoint.add(startPointOptions);
+		return startPoint;
+	}
+
+	private Component createEndPoint() {
+		final JPanel endPoint = new JPanel();
+		endPoint.setVisible(true);
+		endPoint.setBackground(LIGHT_BLUE);
+
+		JLabel endPointLabel = new JLabel();
+		endPointLabel.setVisible(true);
+
+		ImageIcon endPointIcon = new ImageIcon("img/goal.png");
+		endPointLabel.setIcon(endPointIcon);
+		endPointLabel.setPreferredSize(new Dimension(50, 75));
+		endPointLabel.setMaximumSize(new Dimension(50, 75));
+
+		endPointOptions.setPreferredSize(new Dimension(280, 75));
+		endPointOptions.setVisible(true);
+		for (String location : model.getLocations().keySet()) {
+			endPointOptions.addItem(location);
+		}
+
+		endPoint.add(endPointLabel);
+		endPoint.add(endPointOptions);
+		return endPoint;
+	}
+
+	public void updateMap() {
+		mapPanel.repaint();
+	}
+}
