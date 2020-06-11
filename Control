@@ -1,0 +1,34 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Controller implements ActionListener {
+	private MapModel m;
+	private MainView v;
+
+	public Controller(MapModel m, MainView v) {
+		this.m = m;
+		this.v = v;
+		this.v.getSearchButton().addActionListener(this);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String startPoint = (String) this.v.getStartPointOptions()
+		      .getSelectedItem();
+		String endPoint = (String) this.v.getEndPointOptions().getSelectedItem();
+		m.reset();
+		boolean avoidTollBridge = this.v.getAvoidTollBridgeOption().isSelected();
+		
+		if (this.v.getBfsAlgorithmOption().isSelected()) {
+			ShortestPath.bfs(m.getLocations().get(startPoint),
+			      							  m.getLocations().get(endPoint), 
+			      							  m.getMap(), avoidTollBridge);
+		} else if (this.v.getAStartAlgorithmOption().isSelected()) {
+			ShortestPath.aStarSearch(m.getLocations().get(startPoint),
+					  m.getLocations().get(endPoint), 
+					  m.getMap(), avoidTollBridge);
+		}
+		this.v.updateMap();
+	}
+
+}
