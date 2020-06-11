@@ -1,0 +1,33 @@
+
+public class Position implements Comparable<Position> {
+	public int i;
+	public int j;
+	public int manhattanDistance;
+	
+	public Position(int i, int j) {
+		this(i, j, Integer.MAX_VALUE);
+	}
+	
+	public Position(int i, int j, int manhattanDistance) {
+		this.i = i;
+		this.j = j;
+		this.manhattanDistance = manhattanDistance;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		return o instanceof Position 
+				&& ((Position)o).i == this.i
+				&& ((Position)o).j == this.j;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.i * 1001 + this.j;
+	}
+
+	@Override
+	public int compareTo(Position o) {
+		return this.manhattanDistance - o.manhattanDistance;
+	}
+}
